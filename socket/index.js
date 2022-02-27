@@ -10,30 +10,26 @@ const io = new Server(server, {
     }
 })
 
-const usersConnected = []
+const users = []
 
-const addUser = () => {
-    
-}
+io.on('connection', socket => {
+    socket.on('userJoin', ({id,name,surname, room})=> {
+        const userl = {
+            id: id,
+            name: name,
+            surname: surname,
+            room: room,
+            socket: socket.id
+        }
+        !users.some(user => user.id === userl.id) && users.push(userl)
 
-io.on('connection', (socket) => {
-    console.log('usuario conectado')
-    socket.broadcast.emit('connection', socket.id)
+        
+        io.emit('sendUsers', users.filter(users => users.room == userl.room))
 
-    socket.on('sendMessage', ({ id, sender, text }) => {
-        socket.broadcast.emit('getMessage', {
-            id,
-            sender,
-            text
-        })
+        console.log(users)
     })
-
 })
 
-server.listen(4000, () => {
-    console.log('listening on *:4000');
-});
+const PORT = process.env.PORT || 4000;
 
-
-
-
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -7,7 +7,12 @@ const User = require('../models/user')
 router.post('/register', async (req, res, next) => {
     try {
         const user = await User.create({
-            cel: req.body.cel
+            cel: req.body.cel,
+            name: req.body.name,
+            surname: req.body.surname,
+            secondSurname: req.body.secondsurname,
+            identification : req.body.identification,
+            password: req.body.password
         })
         res.status(201).json(user)
     } catch (error) {
@@ -20,7 +25,7 @@ router.post('/register', async (req, res, next) => {
 router.post('/login', async (req, res, next) => {
     const user = await User.findOne({
         where: {
-            cel: req.body.cel
+            identification: req.body.identification
         }
     })
 

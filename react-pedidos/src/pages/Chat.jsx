@@ -16,10 +16,7 @@ const Chat = () => {
 
   useEffect(() => {
     socket.current = io("http://localhost:4000");
-    socket.current.emit()
-    socket.current.on("getMessage", (data) => {
-      setArrivalMessage({ id: data.id, sender: data.sender, text: data.text });
-    });
+    socket.current.emit('userJoin', {id: user.id, name: user.name ,room: 123})
   }, []);
 
   useEffect(() => {

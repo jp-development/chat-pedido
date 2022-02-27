@@ -4,7 +4,7 @@ import { AuthContext } from "../context/AuthContext";
 import fondoLogin from "../assets/fondo-login.png";
 
 const Login = () => {
-  const [cel, setCel] = useState("");
+  const [identification, setIdentification] = useState("");
 
   const { dispatch } = useContext(AuthContext);
 
@@ -13,7 +13,7 @@ const Login = () => {
     dispatch({ type: "LOGIN_START" });
     try {
       const user = await axios.post(`http://localhost:3000/api/auth/login`, {
-        cel,
+        identification,
       });
       dispatch({ type: "LOGIN_SUCCESS", payload: user.data });
     } catch (error) {
@@ -41,8 +41,8 @@ const Login = () => {
             type="text"
             className="w-full border-b-2 p-2 focus:outline-none"
             placeholder="Introduce tu numero de telefono"
-            value={cel}
-            onChange={(e) => setCel(e.target.value)}
+            value={identification}
+            onChange={(e) => setIdentification(e.target.value)}
           />
           <button
             className="w-full p-2 bg-primary rounded-lg my-3"

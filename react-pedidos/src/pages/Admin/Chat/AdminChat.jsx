@@ -2,19 +2,25 @@ import React, { useEffect, useState, useContext, useRef } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import axios from "axios";
 import Message from "../../../components/chat/Message";
+import { io } from 'socket.io-client'
 
 const Adminchat = () => {
   const [usersConnected, setUsersConnected] = useState([]);
   const { user } = useContext(AuthContext);
   const [messages, setMessages] = useState([]);
   const scrollRef = useRef();
+  const socket = useRef()
 
-  useEffect(async () => {
-    const response = await axios.get(
-      "https://jsonplaceholder.typicode.com/users"
-    );
-    setUsersConnected(response.data);
-  });
+  useEffect(() => {
+    socket.current = io('http://localhost:4000')
+    socket.current.emit('userJoin', { id: user.id,name:user.name, surname: user.surname ,room: 123})
+  },[])
+
+  useEffect(() => {
+    socket.current.on('sendUsers', (users) => {
+      setUsersConnected(users)
+    })
+  }, [user]);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -50,7 +56,7 @@ const Adminchat = () => {
           ))}
         </div>
       </div>
-      <div className="">
+      <div className="w-full">
         <div className="h-full w-full  bg-white rounded-xl flex flex-col ">
           <div className="px-5  h-full overflow-y-auto border-x">
             {messages.map((m) => (
@@ -80,14 +86,14 @@ const Adminchat = () => {
       <div className="p-5 w-1/4 h-full">
         <div className="w-full h-full p-5 bg-white rounded-xl">
           <h5 className="font-bold text-lg text-secondary text-center mb-5">
-            Asesoras atrasadas
+            Asesoras conectadas
           </h5>
           {usersConnected.map((u) => (
             <div
               className="border-b p-3 flex justify-between items-center"
               key={u.id}
             >
-              <div>{u.name}</div>
+              <div>{u.name} {u.surname}</div>
               <div className="w-2 h-2 bg-green-500 rounded-full"></div>
             </div>
           ))}
